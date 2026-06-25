@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <link
+rel="icon"
+href="assets/favicon.svg">
+
+<link
+rel="apple-touch-icon"
+href="assets/favicon.svg">
+  <meta property="og:title"
+content="MoCap Free">
+
+<meta property="og:type"
+content="website">
+
+<meta property="og:image"
+content="assets/og-image.png">
+
+<meta property="og:description"
+content="Motion Capture In Your Browser">
+  <meta
+name="description"
+content="Free browser motion capture tool for Godot.">
+
+<meta
+name="keywords"
+content="Motion Capture, Godot, BVH, GLB, JSON">
+
+<meta
+name="author"
+content="MoCap Free">
+  <link rel="icon" href="assets/favicon.svg">
+
+<link rel="apple-touch-icon"
+href="assets/favicon.svg">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MoCap Free | Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<!-- ==========================================
+BACK TO TOP
+========================================== -->
+
+<button id="backTop">
+
+↑
+
+</button>
+<body>
+  <!-- ==========================================
+LOADING SCREEN
+========================================== -->
+
+<div id="loader">
+
+    <div class="loader-logo">
+
+        <span>Mo</span>Cap Free
+
+    </div>
+
+    <div class="loader-bar">
+
+        <div class="loader-progress"></div>
+
+    </div>
+
+</div>
+
+<!-- ==========================================
+SCROLL PROGRESS BAR
+========================================== -->
+
+<div id="scroll-progress"></div>
+<div class="grid"></div>
+
+<header class="header">
+  <div class="logo">
+    <a href="index.html">
+        <img src="assets/logo.svg" alt="MoCap Free Logo" class="logo-img">
+    </a>
+</div>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="mocap.html">Capture</a>
+    <a href="glb-viewer.html">GLB Viewer</a>
+    <a href="guide.html">Guide</a>
+    <a href="faq.html">FAQ</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-text">
+    <div class="badge">BETA v0.1</div>
+    <h1>Motion Capture<br><span>In Your Browser</span></h1>
+    <p>
+      Upload a video, generate motion data and export
+      JSON, BVH and GLB directly from your browser.
+    </p>
+
+    <div class="buttons">
+      <a class="btn primary" href="mocap.html">START CAPTURE</a>
+      <a class="btn secondary" href="glb-viewer.html">OPEN GLB VIEWER</a>
+    </div>
+  </div>
+
+  <div class="hero-card">
+    <h3>MoCap Free</h3>
+    <ul>
+      <li>✔ Browser Only</li>
+      <li>✔ JSON Export</li>
+      <li>✔ BVH Export</li>
+      <li>✔ GLB Export</li>
+      <li>✔ Godot Ready</li>
+    </ul>
+  </div>
+</section>
+
+<section class="features">
+<h2>Features</h2>
+<div class="cards">
+<div class="card"><h3>Browser Only</h3><p>No installation required.</p></div>
+<div class="card"><h3>Motion Capture</h3><p>Convert video into motion.</p></div>
+<div class="card"><h3>Export</h3><p>JSON / BVH / GLB</p></div>
+<div class="card"><h3>Godot Ready</h3><p>Built with Godot workflow in mind.</p></div>
+</div>
+</section>
+
+<section class="workflow">
+<h2>Workflow</h2>
+<ol>
+<li>Upload Video</li>
+<li>Capture Motion</li>
+<li>Download Files</li>
+<li>Preview in GLB Viewer</li>
+</ol>
+</section>
+
+<section class="roadmap">
+<h2>Roadmap</h2>
+<ul>
+<li>✅ JSON Export</li>
+<li>✅ BVH Export</li>
+<li>✅ GLB Export</li>
+<li>🟡 VRM Preview</li>
+<li>🟡 FBX Export</li>
+<li>🟡 Motion Cleanup</li>
+</ul>
+</section>
+<!-- ==========================================
+FEATURES
+========================================== -->
+
+<section class="features">
+
+<h2 class="section-title">
+
+Features
+
+</h2>
+
+<p class="section-subtitle">
+
+Everything you need for browser-based motion capture.
+
+</p>
+
+<div class="feature-grid">
+
+<div class="card">
+
+<div class="icon">⚡</div>
+
+<h3>Browser Only</h3>
+
+<p>
+
+No installation required.
+
+Runs directly in Chrome, Edge and Safari.
+
+</p>
+
+</div>
+
+<div class="card">
+
+<div class="icon">🎥</div>
+
+<h3>Video to Motion</h3>
+
+<p>
+
+Upload your video and automatically generate motion.
+
+</p>
+
+</div>
+
+<div class="card">
+
+<div class="icon">📦</div>
+
+<h3>Export</h3>
+
+<p>
+
+JSON
+
+<br>
+
+BVH
+
+<br>
+
+GLB
+
+</p>
+
+</div>
+
+<div class="card">
+
+<div class="icon">🎮</div>
+
+<h3>Godot Ready</h3>
+
+<p>
+
+Designed for Godot workflow.
+
+</p>
+
+</div>
+
+<div class="card">
+
+<div class="icon">🚀</div>
+
+<h3>Fast</h3>
+
+<p>
+
+Optimized browser processing.
+
+</p>
+
+</div>
+
+<div class="card">
+
+<div class="icon">💎</div>
+
+<h3>Free Beta</h3>
+
+<p>
+
+Completely free during beta.
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ==========================================
+WORKFLOW
+========================================== -->
+
+<section class="workflow">
+
+<h2 class="section-title">
+
+How It Works
+
+</h2>
+
+<div class="steps">
+
+<div class="step">
+
+<span>01</span>
+
+<h3>Upload Video</h3>
+
+<p>Select your MP4 or MOV file.</p>
+
+</div>
+
+<div class="arrow">
+
+↓
+
+</div>
+
+<div class="step">
+
+<span>02</span>
+
+<h3>Capture Motion</h3>
+
+<p>AI extracts body movement.</p>
+
+</div>
+
+<div class="arrow">
+
+↓
+
+</div>
+
+<div class="step">
+
+<span>03</span>
+
+<h3>Export</h3>
+
+<p>JSON / BVH / GLB</p>
+
+</div>
+
+<div class="arrow">
+
+↓
+
+</div>
+
+<div class="step">
+
+<span>04</span>
+
+<h3>Preview</h3>
+
+<p>Open directly in GLB Viewer.</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ==========================================
+STATISTICS
+========================================== -->
+
+<section class="stats">
+
+<div class="stat">
+
+<h2>3</h2>
+
+<p>
+
+Export Formats
+
+</p>
+
+</div>
+
+<div class="stat">
+
+<h2>100%</h2>
+
+<p>
+
+Browser Based
+
+</p>
+
+</div>
+
+<div class="stat">
+
+<h2>0</h2>
+
+<p>
+
+Installation
+
+</p>
+
+</div>
+
+<div class="stat">
+
+<h2>Free</h2>
+
+<p>
+
+Beta Access
+
+</p>
+
+</div>
+
+</section>
+
+<!-- ==========================================
+ROADMAP
+========================================== -->
+
+<section class="roadmap">
+
+<h2 class="section-title">
+
+Roadmap
+<!-- ==========================================
+DEMO
+========================================== -->
+
+<section class="demo">
+
+<h2 class="section-title">
+
+Live Preview
+
+</h2>
+
+<p class="section-subtitle">
+
+See how MoCap Free works before you start.
+
+</p>
+
+<div class="demo-box">
+
+<div class="video-placeholder">
+
+▶
+
+</div>
+
+<p>
+
+Demo video coming soon.
+
+</p>
+
+</div>
+
+</section>
+
+<!-- ==========================================
+SCREENSHOTS
+========================================== -->
+
+<section class="screenshots">
+
+<h2 class="section-title">
+
+Screenshots
+
+</h2>
+
+<div class="shot-grid">
+
+<div class="shot">
+
+Coming Soon
+
+</div>
+
+<div class="shot">
+
+Capture
+
+</div>
+
+<div class="shot">
+
+Viewer
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ==========================================
+WHY MOCAP FREE
+========================================== -->
+
+<section class="why">
+
+<h2 class="section-title">
+
+Why MoCap Free?
+
+</h2>
+
+<div class="feature-grid">
+
+<div class="card">
+
+<h3>
+
+🌐 Browser Based
+
+</h3>
+
+<p>
+
+No installation.
+
+Everything runs inside your browser.
+
+</p>
+
+</div>
+
+<div class="card">
+
+<h3>
+
+⚡ Fast Workflow
+
+</h3>
+
+<p>
+
+Upload.
+
+Capture.
+
+Download.
+
+Done.
+
+</p>
+
+</div>
+
+<div class="card">
+
+<h3>
+
+🎮 Godot Ready
+
+</h3>
+
+<p>
+
+Designed specifically for Godot developers.
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ==========================================
+FAQ
+========================================== -->
+
+<section class="faq-preview">
+
+<h2 class="section-title">
+
+Frequently Asked Questions
+
+</h2>
+
+<div class="faq-item">
+
+<h3>
+
+Is MoCap Free really free?
+
+</h3>
+
+<p>
+
+Yes.
+
+The beta version is completely free.
+
+</p>
+
+</div>
+
+<div class="faq-item">
+
+<h3>
+
+Which formats are supported?
+
+</h3>
+
+<p>
+
+JSON
+
+BVH
+
+GLB
+
+</p>
+
+</div>
+
+<div class="faq-item">
+
+<h3>
+
+Can I use it with Godot?
+
+</h3>
+
+<p>
+
+Yes.
+
+MoCap Free is designed with Godot workflow in mind.
+
+</p>
+
+</div>
+
+</section>
+
+<!-- ==========================================
+CALL TO ACTION
+========================================== -->
+
+<section class="cta">
+
+<h2>
+
+Ready to Start?
+
+</h2>
+
+<p>
+
+Generate your first motion today.
+
+</p>
+
+<a href="mocap.html" class="btn-primary">
+
+START CAPTURE
+
+</a>
+
+</section>
+</h2>
+
+<div class="roadmap-grid">
+
+<div class="done">
+
+✅ JSON Export
+
+</div>
+
+<div class="done">
+
+✅ BVH Export
+
+</div>
+
+<div class="done">
+
+✅ GLB Export
+
+</div>
+
+<div>
+
+🟡 VRM Preview
+
+</div>
+
+<div>
+
+🟡 FBX Export
+
+</div>
+
+<div>
+
+🟡 Motion Cleanup
+
+</div>
+
+<div>
+
+🟡 Finger Tracking
+
+</div>
+
+<div>
+
+🟡 AI Retarget
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ==========================================
+FOOTER
+========================================== -->
+
+<footer>
+
+<div>
+
+<h2>
+
+MoCap Free
+
+</h2>
+
+<p>
+
+Motion Capture In Your Browser
+
+</p>
+
+</div>
+
+<div class="footer-links">
+
+<a href="guide.html">
+
+Guide
+
+</a>
+
+<a href="faq.html">
+
+FAQ
+
+</a>
+
+<a href="about.html">
+
+About
+
+</a>
+
+<a href="privacy.html">
+
+Privacy
+
+</a>
+
+<a href="terms.html">
+
+Terms
+
+</a>
+
+</div>
+
+<p class="footer-year">
+
+2026
+
+</p>
+
+</footer>
+
+<footer>
+  <p>
+
+Made with ❤️ for Godot Developers
+
+</p>
+<p>© 2026 MoCap Free Beta</p>
+<div>
+<a href="privacy.html">Privacy</a> |
+<a href="terms.html">Terms</a> |
+<a href="faq.html">FAQ</a>
+<p>
+
+Beta v0.1
+
+Made for Godot Developers
+
+</p>
+</div>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>
