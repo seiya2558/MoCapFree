@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GLB Viewer — Godot動作確認</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap');
+:root{--bg:#0a0a0f;--surface:#12121a;--surface2:#1a1a26;--border:#2a2a3d;--accent:#00e5ff;--accent2:#7c3aed;--text:#e8e8f0;--text-dim:#6b6b8a;--red:#ff3d5a;--green:#00ff9d;--orange:#ff9500;--pink:#ff4fa3}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+header{padding:13px 20px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.logo{font-size:16px;font-weight:700;color:var(--accent);font-family:'Space Mono',monospace}
+.logo span{color:var(--text)}
+.hlinks{display:flex;align-items:center;gap:14px}
+.hlink{font-family:'Space Mono',monospace;font-size:11px;color:var(--accent2);text-decoration:none;padding:5px 12px;border:1px solid var(--accent2);border-radius:5px;transition:all .2s}
+.hlink:hover{background:var(--accent2);color:#fff}
+.hint{font-size:11px;color:var(--text-dim);font-family:'Space Mono',monospace}
+main{flex:1;display:grid;grid-template-columns:1fr 300px;min-height:0}
+#viewport{position:relative;background:#050508;overflow:hidden}
+#c{width:100%;height:100%;display:block}
+#drop{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:#050508;cursor:pointer;z-index:10}
+#drop.hidden{display:none}
+#drop.over .drop-box{border-color:var(--accent)}
+.drop-box{border:2px dashed var(--border);border-radius:14px;padding:48px 64px;text-align:center;transition:all .2s}
+.icon{font-size:52px;margin-bottom:14px}
+.dt{font-size:17px;font-weight:600;margin-bottom:6px}
+.ds{font-size:12px;color:var(--text-dim);line-height:1.7}
+.ds b{color:var(--accent)}
+#panel{background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column}
+.sec{padding:14px 16px;border-bottom:1px solid var(--border)}
+.sec-title{font-size:9px;font-weight:700;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;font-family:'Space Mono',monospace}
+.row{display:flex;justify-content:space-between;padding:3px 0;font-size:11px;border-bottom:1px solid var(--surface2)}
+.row:last-child{border:none}
+.key{color:var(--text-dim)}.val{color:var(--accent);font-family:'Space Mono',monospace}
+#log{padding:10px 14px;font-family:'Space Mono',monospace;font-size:10px;color:var(--text-dim);flex:1;overflow-y:auto;line-height:1.9;max-height:280px}
+.ok{color:var(--green)}.warn{color:var(--orange)}.err{color:var(--red)}.info{color:var(--accent)}
+#controls{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:6px;background:rgba(10,10,15,.9);border:1px solid var(--border);border-radius:8px;padding:7px 14px;align-items:center}
+.cbtn{background:none;border:1px solid var(--border);color:var(--text-dim);font-size:10px;padding:5px 11px;border-radius:3px;cursor:pointer;font-family:'Space Mono',monospace;transition:all .2s}
+.cbtn:hover,.cbtn.on{border-color:var(--accent);color:var(--accent)}
+.cbtn.play{background:var(--accent);color:#000;border-color:var(--accent);font-size:13px}
+.timeline{position:absolute;bottom:60px;left:20px;right:20px;height:6px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:3px;cursor:pointer;display:none}
+.timeline.show{display:block}
+.tl-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:3px;width:0%}
+.time-lbl{font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);min-width:90px;text-align:center}
+#boneTree{font-family:'Space Mono',monospace;font-size:10px;color:var(--text-dim);padding:4px;max-height:200px;overflow-y:auto;line-height:1.7}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+#fileIn{display:none}
+.pane-lbl{position:absolute;top:12px;left:50%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:9px;color:rgba(255,255,255,.35);letter-spacing:2px;pointer-events:none}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">GLB <span>VIEWER</span></div>
+  <div class="hlinks">
+    <span class="hint">ドラッグ＆ドロップ または クリックで .glb を開く</span>
+  </div>
+</header>
+<main>
+  <div id="viewport">
+    <canvas id="c"></canvas>
+    <div class="pane-lbl">GLB PREVIEW</div>
+    <div id="drop" onclick="document.getElementById('fileIn').click()">
+      <div class="drop-box">
+        <div class="icon">📦</div>
+        <div class="dt">GLBファイルをドロップ</div>
+        <div class="ds"><b>mocap.html</b> で生成した .glb を<br>ここにドラッグ＆ドロップ<br>スケルトンアニメーションを再生します</div>
+      </div>
+    </div>
+    <div class="timeline" id="timeline"><div class="tl-fill" id="tlFill"></div></div>
+    <div id="controls" style="display:none">
+      <button class="cbtn play" id="playBtn" onclick="togglePlay()">⏸</button>
+      <span class="time-lbl" id="timeLbl">0.0s / 0.0s</span>
+      <button class="cbtn" onclick="resetView()">↺ 視点</button>
+      <button class="cbtn on" id="skelBtn" onclick="toggleSkel()">骨格ON</button>
+      <select id="speedSel" onchange="setSpeed()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:4px 6px;border-radius:3px;font-family:'Space Mono',monospace;font-size:9px;cursor:pointer">
+        <option value="0.25">0.25x</option><option value="0.5">0.5x</option><option value="1" selected>1x</option><option value="2">2x</option>
+      </select>
+    </div>
+  </div>
+  <div id="panel">
+    <div class="sec">
+      <div class="sec-title">GLB 情報</div>
+      <div id="glbInfo"><div style="color:var(--text-dim);font-size:11px;text-align:center;padding:10px">ファイルを読み込むと表示</div></div>
+    </div>
+    <div class="sec">
+      <div class="sec-title">ボーン階層</div>
+      <div id="boneTree">-</div>
+    </div>
+    <div class="sec" style="flex:1;display:flex;flex-direction:column">
+      <div class="sec-title">検証ログ</div>
+      <div id="log">ファイルを読み込んでください...</div>
+    </div>
+  </div>
+</main>
+<input type="file" id="fileIn" accept=".glb,.gltf">
+
+<script>
+const S={playing:true,skelVisible:true,mixer:null,skelHelper:null,model:null,action:null,clip:null,speed:1,boneViz:null,boneVizData:[]};
+
+function loadScript(url,cb){const s=document.createElement('script');s.src=url;s.onload=cb;s.onerror=()=>log(`スクリプト読込失敗: ${url}`,'err');document.head.appendChild(s);}
+loadScript('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',()=>{
+  loadScript('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js',initViewer);
+});
+
+function log(msg,type='info'){const el=document.getElementById('log');const pre={ok:'✓ ',warn:'⚠ ',err:'✗ ',info:'→ '}[type]||'';el.innerHTML+=`<div class="${type}">${pre}${msg}</div>`;el.scrollTop=el.scrollHeight;}
+function clearLog(){document.getElementById('log').innerHTML='';}
+
+let renderer,scene,camera,clock;
+let az=0,pol=0.25,rad=4,drag=false,lx=0,ly=0;
+let tgt=null;
+
+function initViewer(){
+  tgt=new THREE.Vector3(0,1,0);
+  const canvas=document.getElementById('c');
+  renderer=new THREE.WebGLRenderer({canvas,antialias:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.setClearColor(0x050508,1);
+  renderer.outputEncoding=THREE.sRGBEncoding;
+  scene=new THREE.Scene();
+  scene.fog=new THREE.FogExp2(0x050508,0.04);
+  camera=new THREE.PerspectiveCamera(45,1,0.001,1000);
+  clock=new THREE.Clock();
+  scene.add(new THREE.AmbientLight(0xffffff,0.7));
+  const dl=new THREE.DirectionalLight(0xffffff,1.2);dl.position.set(3,6,4);scene.add(dl);
+  const dl2=new THREE.DirectionalLight(0x7c3aed,0.4);dl2.position.set(-3,2,-3);scene.add(dl2);
+  const dl3=new THREE.PointLight(0x00e5ff,0.3,15);dl3.position.set(0,5,0);scene.add(dl3);
+  scene.add(new THREE.GridHelper(6,20,0x1a1a26,0x12121a));
+
+  canvas.addEventListener('mousedown',e=>{drag=true;lx=e.clientX;ly=e.clientY;});
+  window.addEventListener('mouseup',()=>drag=false);
+  window.addEventListener('mousemove',e=>{if(!drag)return;az-=(e.clientX-lx)*0.012;pol=Math.max(-1.3,Math.min(1.3,pol+(e.clientY-ly)*0.008));lx=e.clientX;ly=e.clientY;});
+  canvas.addEventListener('wheel',e=>{rad=Math.max(0.05,Math.min(30,rad+e.deltaY*.005));e.preventDefault();},{passive:false});
+
+  document.getElementById('timeline').addEventListener('click',e=>{
+    if(!S.action||!S.clip)return;
+    const rect=e.currentTarget.getBoundingClientRect();
+    const pct=(e.clientX-rect.left)/rect.width;
+    S.action.time=pct*S.clip.duration;
+  });
+
+  resize();window.addEventListener('resize',resize);animate();
+  log('Three.js + GLTFLoader 準備完了','ok');
+}
+function resize(){const vp=document.getElementById('viewport');renderer.setSize(vp.clientWidth,vp.clientHeight);camera.aspect=vp.clientWidth/vp.clientHeight;camera.updateProjectionMatrix();}
+function resetView(){az=0;pol=0.25;rad=4;}
+function animate(){
+  requestAnimationFrame(animate);
+  if(!tgt||!camera||!renderer)return;
+  const dt=clock.getDelta();
+  if(S.mixer&&S.playing)S.mixer.update(dt);
+
+  // ボーン可視化の球と線を更新
+  if(S.boneVizData&&S.boneVizData.length>0){
+    const wp=new THREE.Vector3();
+    S.boneVizData.forEach(({bone,sph,line})=>{
+      bone.getWorldPosition(wp);
+      sph.position.copy(wp);
+      if(line&&bone.parent&&bone.parent.isBone){
+        const pp=new THREE.Vector3();
+        bone.parent.getWorldPosition(pp);
+        const pos=line.geometry.attributes.position;
+        pos.setXYZ(0,pp.x,pp.y,pp.z);
+        pos.setXYZ(1,wp.x,wp.y,wp.z);
+        pos.needsUpdate=true;
+      }
+    });
+  }
+
+  if(S.action&&S.clip){
+    const pct=(S.action.time/S.clip.duration*100)||0;
+    document.getElementById('tlFill').style.width=pct+'%';
+    document.getElementById('timeLbl').textContent=`${S.action.time.toFixed(1)}s / ${S.clip.duration.toFixed(1)}s`;
+  }
+  camera.position.set(tgt.x+Math.sin(az)*Math.cos(pol)*rad,tgt.y+Math.sin(pol)*rad,tgt.z+Math.cos(az)*Math.cos(pol)*rad);
+  camera.lookAt(tgt);
+  renderer.render(scene,camera);
+}
+
+function loadGLB(file){
+  clearLog();
+  log(`${file.name}  (${(file.size/1024).toFixed(1)} KB)`);
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const ab=e.target.result;const dv=new DataView(ab);
+    const magic=String.fromCharCode(...new Uint8Array(ab,0,4));
+    if(magic!=='glTF'){log('GLBマジック不正: '+magic,'err');return;}
+    const ver=dv.getUint32(4,true),total=dv.getUint32(8,true);
+    log(`GLB v${ver}, サイズ=${total}, 実=${ab.byteLength}`);
+    const c0len=dv.getUint32(12,true);
+    const c0type=String.fromCharCode(...new Uint8Array(ab,16,4));
+    if(c0type!=='JSON'){log('JSONチャンクなし','err');return;}
+    let gltfJson;
+    try{gltfJson=JSON.parse(new TextDecoder().decode(new Uint8Array(ab,20,c0len)));log('JSONパース OK');}catch(e){log('JSONパースエラー: '+e.message,'err');return;}
+    const skinCount=(gltfJson.skins||[]).length;
+    const animCount=(gltfJson.animations||[]).length;
+    log(`ノード:${(gltfJson.nodes||[]).length} スキン:${skinCount} アニメ:${animCount}`);
+    if(skinCount===0)log('スキンなし → 古い形式のGLBです','warn');
+    showInfo(file,gltfJson);
+    const blob=new Blob([ab],{type:'model/gltf-binary'});
+    const url=URL.createObjectURL(blob);
+    const loader=new THREE.GLTFLoader();
+    loader.load(url,gltf=>{URL.revokeObjectURL(url);onLoaded(gltf,gltfJson,file);},null,err=>{
+      URL.revokeObjectURL(url);
+      const msg=err&&err.message?err.message:(typeof err==='string'?err:'不明');
+      log('GLTFLoaderエラー: '+msg,'err');
+      buildBoneTree(gltfJson);
+    });
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function showInfo(file,gltfJson){
+  const nodes=gltfJson.nodes||[],skins=gltfJson.skins||[],anims=gltfJson.animations||[];
+  const boneCount=skins.length>0?(skins[0].joints||[]).length:0;
+  document.getElementById('glbInfo').innerHTML=[
+    ['ファイル',file.name],['サイズ',(file.size/1024).toFixed(1)+' KB'],
+    ['ノード数',nodes.length],['スキン数',skins.length],['ボーン数',boneCount],
+    ['アニメ数',anims.length],
+  ].map(([k,v])=>`<div class="row"><span class="key">${k}</span><span class="val" style="color:${k==='スキン数'&&v===0?'#ff3d5a':(k==='ボーン数'&&v>0?'#00ff9d':'#00e5ff')}">${v}</span></div>`).join('');
+}
+
+function buildBoneTree(gltfJson){
+  const nodes=gltfJson.nodes||[],skins=gltfJson.skins||[];
+  if(skins.length===0){document.getElementById('boneTree').innerHTML='<span style="color:#ff9500">スキンなし</span>';return;}
+  const joints=skins[0].joints||[];
+  const childSet=new Set(nodes.flatMap(n=>n.children||[]));
+  const roots=joints.filter(j=>!childSet.has(j));
+  function tn(idx,depth){if(depth>8)return'';const n=nodes[idx];if(!n)return'';let h=`<div style="padding-left:${depth*10}px;color:${depth===0?'#00e5ff':depth<3?'#7c3aed':'#6b6b8a'}">${n.name||('node_'+idx)}</div>`;(n.children||[]).filter(c=>joints.includes(c)).forEach(c=>h+=tn(c,depth+1));return h;}
+  document.getElementById('boneTree').innerHTML=roots.map(r=>tn(r,0)).join('');
+}
+
+function onLoaded(gltf,gltfJson,file){
+  if(S.model)scene.remove(S.model);
+  if(S.skelHelper)scene.remove(S.skelHelper);
+  if(S.mixer)S.mixer.stopAllAction();
+  const model=gltf.scene;S.model=model;
+  scene.add(model);
+
+  // ボーンを収集
+  let skinnedMesh=null;
+  const bones=[];
+  model.traverse(obj=>{
+    if(obj.isSkinnedMesh&&obj.skeleton){skinnedMesh=obj;}
+    if(obj.isBone)bones.push(obj);
+  });
+  log(`ボーン検出: ${bones.length}本, SkinnedMesh: ${skinnedMesh?'あり':'なし'}`,'info');
+
+  // ── スケール&中心調整 ──
+  // メッシュがない場合はボーン位置からバウンディングを計算
+  const box=new THREE.Box3();
+  if(skinnedMesh){
+    box.setFromObject(model);
+  }
+  // ボーンのワールド座標も含める
+  model.updateMatrixWorld(true);
+  bones.forEach(b=>{
+    const wp=new THREE.Vector3();
+    b.getWorldPosition(wp);
+    box.expandByPoint(wp);
+  });
+
+  let size=box.getSize(new THREE.Vector3());
+  let center=box.getCenter(new THREE.Vector3());
+  let maxDim=Math.max(size.x,size.y,size.z);
+  if(!isFinite(maxDim)||maxDim<1e-4)maxDim=2; // フォールバック
+  const sc=2.0/maxDim;
+  model.scale.setScalar(sc);
+  model.position.copy(center.clone().multiplyScalar(-sc));
+  model.position.y+=Math.abs(size.y*sc*0.5)||1;
+  scene.add(model);
+  log('モデル配置 OK','ok');
+
+  // ── ボーン可視化（メッシュがないGLB用に球と線を追加）──
+  if(S.boneViz){scene.remove(S.boneViz);}
+  S.boneViz=new THREE.Group();
+  S.boneVizData=[];
+  bones.forEach(bone=>{
+    // ジョイント球
+    const sph=new THREE.Mesh(
+      new THREE.SphereGeometry(0.025,8,6),
+      new THREE.MeshStandardMaterial({color:0x00e5ff,emissive:0x00e5ff,emissiveIntensity:0.4})
+    );
+    S.boneViz.add(sph);
+    // 親への線
+    let line=null;
+    if(bone.parent&&bone.parent.isBone){
+      const geo=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3()]);
+      const mat=new THREE.LineBasicMaterial({color:0x7c3aed});
+      line=new THREE.Line(geo,mat);
+      S.boneViz.add(line);
+    }
+    S.boneVizData.push({bone,sph,line});
+  });
+  scene.add(S.boneViz);
+  log(`ボーン可視化: ${bones.length}個の球を配置`,'ok');
+
+  model.traverse(obj=>{
+    if(obj.isSkinnedMesh&&obj.skeleton&&!S.skelHelper){
+      S.skelHelper=new THREE.SkeletonHelper(model);
+      S.skelHelper.visible=S.skelVisible;
+      if(S.skelHelper.material)S.skelHelper.material.linewidth=2;
+      scene.add(S.skelHelper);
+      log(`SkeletonHelper生成 (ボーン: ${obj.skeleton.bones.length}本)`,'ok');
+    }
+  });
+
+  const anims=gltf.animations||[];
+  if(anims.length>0){
+    S.mixer=new THREE.AnimationMixer(model);
+    S.clip=anims[0];
+    S.action=S.mixer.clipAction(S.clip);
+    S.action.play();S.playing=true;
+    document.getElementById('playBtn').textContent='⏸';
+    log(`アニメ "${S.clip.name}" 再生中 (${S.clip.duration.toFixed(2)}s)`,'ok');
+    log(`トラック数: ${S.clip.tracks.length}`);
+    document.getElementById('timeline').classList.add('show');
+  }else{
+    log('アニメーションなし','warn');
+    S.clip=null;S.action=null;
+  }
+
+  buildBoneTree(gltfJson);
+
+  log('── Godot 互換チェック ──','info');
+  if((gltfJson.skins||[]).length>0)log('skins あり → Skeleton3D 生成','ok');else log('skins なし','err');
+  if(anims.length>0)log('animations あり → AnimationPlayer 生成','ok');else log('animations なし','warn');
+  log('── 完了 ──','info');
+
+  tgt.set(0,Math.abs(size.y*sc*0.3)||0.8,0);
+  document.getElementById('drop').classList.add('hidden');
+  document.getElementById('controls').style.display='flex';
+}
+
+function togglePlay(){S.playing=!S.playing;document.getElementById('playBtn').textContent=S.playing?'⏸':'▶';}
+function toggleSkel(){
+  S.skelVisible=!S.skelVisible;
+  if(S.skelHelper)S.skelHelper.visible=S.skelVisible;
+  if(S.boneViz)S.boneViz.visible=S.skelVisible;
+  const b=document.getElementById('skelBtn');b.classList.toggle('on',S.skelVisible);b.textContent=S.skelVisible?'骨格ON':'骨格OFF';
+}
+function setSpeed(){S.speed=parseFloat(document.getElementById('speedSel').value);if(S.mixer)S.mixer.timeScale=S.speed;}
+
+document.getElementById('fileIn').addEventListener('change',e=>{const f=e.target.files[0];if(f)loadGLB(f);e.target.value='';});
+const dropEl=document.getElementById('drop');
+dropEl.addEventListener('dragover',e=>{e.preventDefault();dropEl.classList.add('over');});
+dropEl.addEventListener('dragleave',e=>{if(!dropEl.contains(e.relatedTarget))dropEl.classList.remove('over');});
+dropEl.addEventListener('drop',e=>{e.preventDefault();dropEl.classList.remove('over');const f=e.dataTransfer.files[0];if(f)loadGLB(f);});
+</script>
+</body>
+</html>
